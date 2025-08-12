@@ -1,4 +1,4 @@
-# Expert Project
+# ExpertSoft Project
 
 ## Description
 A Node.js + MySQL app that uploads a mixed CSV and processes it into a normalized relational database.
