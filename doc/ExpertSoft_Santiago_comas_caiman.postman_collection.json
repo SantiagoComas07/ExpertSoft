@@ -1,0 +1,125 @@
+{
+	"info": {
+		"_postman_id": "393e9581-b412-4d9e-8370-b94c1d1b8d6e",
+		"name": "ExpertSoft_Santiago_comas_caiman",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46564310",
+		"_collection_link": "https://santiago-8037187.postman.co/workspace/Santiago's-Workspace~c66101c2-be4e-4f33-8b29-ad86bf0ee45c/collection/46564310-393e9581-b412-4d9e-8370-b94c1d1b8d6e?action=share&source=collection_link&creator=46564310"
+	},
+	"item": [
+		{
+			"name": "Upload csv file",
+			"item": [
+				{
+					"name": "upload csv file",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/upload",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"upload"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "See transaction list",
+			"item": [
+				{
+					"name": "See request",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/table-view",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"table-view"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Update transaction",
+			"item": [
+				{
+					"name": "Update transaction",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/update/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"update",
+								"1"
+							],
+							"query": [
+								{
+									"key": "1",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Delete transaction",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/delete/371",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"delete",
+								"371"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
