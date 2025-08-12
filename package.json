@@ -1,0 +1,30 @@
+{
+  "name": "expertsoft",
+  "version": "1.0.0",
+  "description": "CRUD with express and upload csv file",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SantiagoComas07/ExpertSoft.git"
+  },
+  "author": "SantiagoComas07",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/SantiagoComas07/ExpertSoft/issues"
+  },
+  "homepage": "https://github.com/SantiagoComas07/ExpertSoft#readme",
+  "dependencies": {
+    "csv-parser": "^3.2.0",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "multer": "^2.0.2",
+    "mysql2": "^3.14.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
