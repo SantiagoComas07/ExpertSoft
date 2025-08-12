@@ -13,7 +13,7 @@ const pool = mysql.createPool({
   port: process.env.DB_PORT
 });
 
-// Probar conexión al arrancar
+// Test connection on startup
 (async () => {
   try {
     const connection = await pool.getConnection();

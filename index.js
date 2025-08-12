@@ -1,4 +1,4 @@
-// Dependens
+// Dependens, important tools to use in the project.
 const express = require("express");
 const multer = require("multer");
 const csv = require("csv-parser");
@@ -9,14 +9,14 @@ const pool = require("./src/config/mysql");
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 
-// Crear carpeta uploads si no existe
+// Create uploads folder if it doesn't exist
 const uploadDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
 
 // Configuración de multer
 const upload = multer({ dest: uploadDir });
 
-// Mapeo de columnas desde el CSV a la DB
+// Map of the columns, here i can have the control of the entity's titles
 const equivalencias = {
   "id_de_la_transaccion": "code",
   "fecha_y_hora_de_la_transaccion": "transaction_datetime",
@@ -35,28 +35,28 @@ const equivalencias = {
   "monto_pagado": "amount_paid"
 };
 
-// Mapeo de estados del CSV a los que acepta MySQL
+// Map csv states
 const statusMap = {
   "pendiente": "Pending",
   "completado": "Completed",
   "fallido": "Failed"
 };
 
-// Funciones para formatear fechas
+// Functions to format dates
 function toDate(str) {
   if (!str) return null;
   const d = new Date(str);
   if (isNaN(d)) return null;
-  return d.toISOString().slice(0, 10); // YYYY-MM-DD
+  return d.toISOString().slice(0, 10); // outside  YYYY-MM-DD
 }
 function toDateTime(str) {
   if (!str) return null;
   const d = new Date(str);
   if (isNaN(d)) return null;
-  return d.toISOString().slice(0, 19).replace("T", " "); // YYYY-MM-DD HH:mm:ss
+  return d.toISOString().slice(0, 19).replace("T", " "); // outside YYYY-MM-DD HH:mm:ss
 }
 
-// Página principal para subir CSV
+// The main page to upload the information
 app.get("/", (req, res) => {
   res.send(`
     <html>
@@ -77,7 +77,7 @@ app.get("/", (req, res) => {
   `);
 });
 
-// Procesar CSV y guardar en MySQL
+// Process csv and save it in to Mysql
 app.post("/upload", upload.single("archivoCSV"), async (req, res) => {
   const rows = [];
   fs.createReadStream(req.file.path)
@@ -96,6 +96,7 @@ app.post("/upload", upload.single("archivoCSV"), async (req, res) => {
             if (equivalencias[normal]) obj[equivalencias[normal]] = r[key];
           }
 
+        // Here i check that the object exist, if it doesn't exist , then, continue
           if (!obj.identification) continue;
 
           obj.billing_period = toDate(obj.billing_period);
@@ -143,7 +144,7 @@ app.post("/upload", upload.single("archivoCSV"), async (req, res) => {
     });
 });
 
-// Vista con Tailwind para mostrar los datos
+// This is the view with Taildwind to render the datas
 app.get("/table-view", async (req, res) => {
   const [rows] = await pool.query(`
     SELECT t.id_transaction, c.name_user, c.identification, c.email, p.platform_name, i.invoice_number, t.amount
@@ -176,6 +177,7 @@ app.get("/table-view", async (req, res) => {
             <tbody>
   `;
   rows.forEach(r => {
+    //Here i add dinamic content to the HTML 
     html += `
       <tr>
         <td class="border px-4 py-2">${r.id_transaction}</td>
@@ -203,13 +205,13 @@ app.get("/table-view", async (req, res) => {
   res.send(html);
 });
 
-// Eliminar registro
+// Delete register
 app.get("/delete/:id", async (req, res) => {
   await pool.query("DELETE FROM transactions WHERE id_transaction = ?", [req.params.id]);
   res.redirect("/table-view");
 });
 
-// Formulario para actualizar (ahora todos los campos)
+// Form for update each register
 app.get("/update/:id", async (req, res) => {
   const [rows] = await pool.query(`
     SELECT t.*, c.name_user, c.identification, c.address_user, c.phone_number, c.email,
@@ -224,7 +226,7 @@ app.get("/update/:id", async (req, res) => {
 
   if (!rows.length) return res.send("Registro no encontrado");
   const r = rows[0];
-
+// Here this content will be render on the page
   res.send(`
     <html>
       <head><script src="https://cdn.tailwindcss.com"></script></head>
@@ -256,7 +258,7 @@ app.get("/update/:id", async (req, res) => {
 });
 
 
-// Guardar cambios (actualiza todas las tablas)
+// Save changes
 app.post("/update/:id", async (req, res) => {
   const {
     name_user, identification, address_user, phone_number, email,
@@ -265,7 +267,7 @@ app.post("/update/:id", async (req, res) => {
   } = req.body;
 
   try {
-    // Obtener los IDs relacionados de la transacción
+    // Ge the id related with the transactions
     const [[ids]] = await pool.query(`
       SELECT t.id_invoice, t.id_platform, i.id_client
       FROM transactions t
@@ -277,33 +279,32 @@ app.post("/update/:id", async (req, res) => {
       return res.status(404).send("Transacción no encontrada");
     }
 
-    // Logs para depuración
     console.log("Actualizando transacción ID:", req.params.id);
     console.log("Datos recibidos:", req.body);
     console.log("IDs relacionados:", ids);
 
-    // Actualizar cliente
+    // Update client
     const [clientUpdate] = await pool.query(`
       UPDATE clients SET name_user=?, identification=?, address_user=?, phone_number=?, email=?
       WHERE id_client=?
     `, [name_user, identification, address_user, phone_number, email, ids.id_client]);
     console.log("Clientes actualizados:", clientUpdate.affectedRows);
 
-    // Actualizar plataforma
+    // update Platform
     const [platformUpdate] = await pool.query(`
       UPDATE platforms SET platform_name=?
       WHERE id_platform=?
     `, [platform_name, ids.id_platform]);
     console.log("Plataformas actualizadas:", platformUpdate.affectedRows);
 
-    // Actualizar factura
+    // Update invoices
     const [invoiceUpdate] = await pool.query(`
       UPDATE invoices SET invoice_number=?, billing_period=?, amount_billed=?
       WHERE id_invoice=?
     `, [invoice_number, billing_period || null, amount_billed || 0, ids.id_invoice]);
     console.log("Facturas actualizadas:", invoiceUpdate.affectedRows);
 
-    // Actualizar transacción
+    // Update transaction
     const [transactionUpdate] = await pool.query(`
       UPDATE transactions
       SET code=?, transaction_datetime=?, amount=?, transaction_status=?, transaction_type=?, amount_paid=?
@@ -326,5 +327,5 @@ app.post("/update/:id", async (req, res) => {
   }
 });
 
-
+// Easy way to go to the page  --> http://localhost:3000
 app.listen(3000, () => console.log("Servidor en http://localhost:3000"));
