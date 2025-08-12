@@ -10,9 +10,10 @@ A Node.js + MySQL app that uploads a mixed CSV and processes it into a normalize
 ## Technologies
 - Node.js (v22.16.0)
 - javascript vanilla
+- HTML5
 - MySQL
 - clever cloud (database + mysql + phpMyAdmin)
-- Taildwind (CDN installation)
+- Taildwind  -v4.1 (CDN installation)
 - Express (node package)
 - Multer (node package)
 - CSV-Parser (node package)
@@ -23,7 +24,7 @@ A Node.js + MySQL app that uploads a mixed CSV and processes it into a normalize
 
 ### What is normalization?
 
-Is clear that Normalization is a process to organize data efficiently and minimize redundancy, improving the integrity and consistency of information,therefore, the data received in this exercise was modified to comply with rules nf1, nf2 and nf3.
+Is clear that Normalization is a process to organize data efficiently and minimize redundancy, improving the integrity and consistency of information,therefore, the data received in this exercise was modified to comply with rules NF1, NF2 and NF3.
 
 
 ##  bulk upload of csv files
